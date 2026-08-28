@@ -1,0 +1,16 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_NICE_VIEW_CONN_STATUS
+
+config NICE_VIEW_CONN_STATUS_WIDGET
+    bool "Connection-focused nice!view status widget"
+    default y
+    depends on ZMK_DISPLAY
+    select LV_FONT_MONTSERRAT_14
+    select LV_FONT_MONTSERRAT_16
+    select LV_FONT_MONTSERRAT_18
+    select LV_USE_CANVAS
+    select LV_USE_IMAGE
+
+endif # SHIELD_NICE_VIEW_CONN_STATUS

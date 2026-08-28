@@ -1,0 +1,7 @@
+file_format: "1"
+id: nice_view_conn_status
+name: nice!view connection status
+type: shield
+requires: [nice_view_header]
+features:
+  - display

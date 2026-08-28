@@ -128,9 +128,9 @@
             display-name = "CONFIG";
 
             bindings = <
-&rgb_ug RGB_BRI  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 4
+&rgb_ug RGB_BRI  &rgb_ug RGB_HUD  &rgb_ug RGB_HUI  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 4
 &rgb_ug RGB_TOG  &trans  &trans  &trans  &trans  &tog GAME  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 3
-&rgb_ug RGB_BRD  &trans  &trans  &trans  &trans  &trans                  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2
+&rgb_ug RGB_BRD  &trans  &trans  &kp CAPS  &trans  &trans                  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2
                              &trans  &trans  &trans                        &trans  &trans     &trans
             >;
         };
