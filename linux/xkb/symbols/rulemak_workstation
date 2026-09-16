@@ -1,0 +1,20 @@
+// Overlay for the installed rulemak-cdh-xkb package, retaining its Ctrl layer.
+// English remains host us; Corne firmware provides Colemak-DH key positions.
+default partial alphanumeric_keys
+xkb_symbols "basic" {
+    include "rulemak_cdh(basic)"
+    name[Group1] = "Russian (Rulemak-CDH)";
+
+    // Base/Shift: Russian punctuation. AltGr and Ctrl: US keycodes.
+    key <AE02> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ 2, quotedbl, 2, at, 2, at, 2, at ] };
+    key <AE03> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ 3, numerosign, 3, numbersign, 3, numbersign, 3, numbersign ] };
+    key <AE04> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ 4, semicolon, 4, dollar, 4, dollar, 4, dollar ] };
+    key <AE06> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ 6, colon, 6, asciicircum, 6, asciicircum, 6, asciicircum ] };
+    key <AE07> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ 7, question, 7, ampersand, 7, ampersand, 7, ampersand ] };
+
+    // Typographic extras, without sacrificing ordinary punctuation or Ctrl.
+    key <AE11> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ minus, underscore, emdash, endash, minus, underscore, minus, underscore ] };
+    key <AB08> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ comma, semicolon, guillemotleft, less, comma, less, comma, less ] };
+    key <AB09> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ period, colon, guillemotright, greater, period, greater, period, greater ] };
+    key <AB10> { type[Group1] = "EIGHT_LEVEL_BY_CTRL", [ slash, question, ellipsis, question, slash, question, slash, question ] };
+};
