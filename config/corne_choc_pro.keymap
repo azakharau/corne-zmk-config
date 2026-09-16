@@ -113,6 +113,9 @@
             // Left inner Alt is sticky AltGr here: hold for SYMBOL keys, or
             // tap and release SYMBOL to use an extra on the base layer.
             // Base/home-row/thumb Alt remain LALT for navigation shortcuts.
+            // F13..F18 are unshifted symbol transport codes for the host map.
+            // RU: top-left ё; lower right _ + « » — … (no implicit capitals).
+            // Requires Linux corne:symbols or an equivalent host adapter.
 
             // -----------------------------------------------------------------------------------------
             // |  ~   |  !  |  @  |  #  |  $  |  %  | LCTRL | RCTRL |  ^  |  &  |  *  |  (  |  )  | BSPC |
@@ -121,9 +124,9 @@
             //                    | GUI |     | SPC |               | ENT |     | ALT |
 
             bindings = <
-&kp TILDE  &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT  &kp LCTRL  &kp RCTRL  &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR  &kp RPAR  &kp BSPC
+&kp F18    &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT  &kp LCTRL  &kp RCTRL  &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR  &kp RPAR  &kp BSPC
 &kp F1     &kp F2    &kp F3  &kp F4    &kp F5    &kp F6     &sk RALT   &kp LALT   &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT  &kp BSLH  &kp GRAVE
-&kp F7     &kp F8    &kp F9  &kp F10   &kp F11   &kp F12                          &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC  &kp PIPE  &kp TILDE
+&kp F7     &kp F8    &kp F9  &kp F10   &kp F11   &kp F12                          &kp UNDER  &kp F13    &kp F14    &kp F15   &kp F16   &kp F17
                              &kp LGUI  &trans    &kp SPACE                        &kp RET    &trans     &kp LALT
             >;
         };

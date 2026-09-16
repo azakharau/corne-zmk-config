@@ -1,0 +1,21 @@
+// Dedicated unshifted HID F13..F18 from SYMBOL; not physical function keys.
+// Requires exactly group 1 = US, group 2 = Rulemak-CDH.
+partial alphanumeric_keys
+xkb_symbols "en" {
+    key <FK13> { type[Group1]="ONE_LEVEL", [ plus ] };
+    key <FK14> { type[Group1]="ONE_LEVEL", [ braceleft ] };
+    key <FK15> { type[Group1]="ONE_LEVEL", [ braceright ] };
+    key <FK16> { type[Group1]="ONE_LEVEL", [ bar ] };
+    key <FK17> { type[Group1]="ONE_LEVEL", [ asciitilde ] };
+    key <FK18> { type[Group1]="ONE_LEVEL", [ asciitilde ] };
+};
+
+partial alphanumeric_keys
+xkb_symbols "ru" {
+    key <FK13> { type[Group1]="ONE_LEVEL", [ plus ] };
+    key <FK14> { type[Group1]="ONE_LEVEL", [ guillemetleft ] };
+    key <FK15> { type[Group1]="ONE_LEVEL", [ guillemetright ] };
+    key <FK16> { type[Group1]="ONE_LEVEL", [ emdash ] };
+    key <FK17> { type[Group1]="ONE_LEVEL", [ ellipsis ] };
+    key <FK18> { type[Group1]="ALPHABETIC", [ Cyrillic_io, Cyrillic_IO ] };
+};

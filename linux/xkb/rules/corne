@@ -1,0 +1,5 @@
+// Extend the system rules; append our six-key transport after inet(evdev).
+! include %S/evdev
+
+! option = symbols
+  corne:symbols = +corne_symbols(en):1+corne_symbols(ru):2

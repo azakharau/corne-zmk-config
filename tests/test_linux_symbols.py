@@ -7,6 +7,7 @@ Run with --baseline to demonstrate the old punctuation failures.
 import ctypes as c
 from pathlib import Path
 import sys
+import re
 
 lib = c.CDLL('libxkbcommon.so.0')
 def bind(name, restype, *args):
@@ -19,11 +20,13 @@ class Names(c.Structure):
     _fields_ = [(k, s) for k in ('rules', 'model', 'layout', 'variant', 'options')]
 
 ctx = bind('xkb_context_new', ptr, c.c_int)(0)
+bind('xkb_context_include_path_clear', None, ptr)(ctx)
 bind('xkb_context_include_path_append', c.c_int, ptr, s)(
     ctx, str(Path(__file__).resolve().parents[1] / 'linux/xkb').encode())
+bind('xkb_context_include_path_append_default', c.c_int, ptr)(ctx)
 baseline = '--baseline' in sys.argv
-names = Names(b'evdev', b'pc105', b'us,ru' if baseline else b'us,rulemak_workstation',
-              b',rulemak_cdh' if baseline else b',basic', b'')
+names = Names(b'evdev' if baseline else b'corne', b'pc105', b'us,ru' if baseline else b'us,rulemak_workstation',
+              b',rulemak_cdh' if baseline else b',basic', b'' if baseline else b'corne:symbols')
 keymap = bind('xkb_keymap_new_from_names', ptr, ptr, c.POINTER(Names), c.c_int)(ctx, c.byref(names), 0)
 assert keymap, 'XKB compilation failed'
 state = bind('xkb_state_new', ptr, ptr)(keymap)
@@ -72,6 +75,26 @@ for name, char, mods in [('AE11','—',('Mod5',)), ('AE11','–',('Mod5','Shift'
 for name, char in [('AC01','a'), ('AB03','c'), ('AB04','v'), ('AB01','z')]:
     check(name, char, ('Control',))
     check(name, char.upper(), ('Control','Shift'))
+# Integration regression: consume the actual firmware SYMBOL bindings, not
+# merely an idealized host key. Implicit Shift caused uppercase Russian letters.
+firmware = (Path(__file__).resolve().parents[1] / 'config/corne_choc_pro.keymap').read_text()
+symbol_block = firmware.split('raise_layer {', 1)[1].split('bindings = <', 1)[1].split('>;', 1)[0]
+rows = [re.findall(r'&kp\s+(\w+)', line) for line in symbol_block.splitlines() if '&kp' in line]
+legacy = {'PLUS': ('AE12', ('Shift',)), 'LBRC': ('AD11', ('Shift',)),
+          'RBRC': ('AD12', ('Shift',)), 'PIPE': ('BKSL', ('Shift',)),
+          'TILDE': ('TLDE', ('Shift',))}
+for row, column, en, ru in [(0,0,'~','ё'), (2,7,'+','+'), (2,8,'{','«'),
+                            (2,9,'}','»'), (2,10,'|','—'), (2,11,'~','…')]:
+    code = rows[row][column]
+    if code in legacy:
+        name, implicit = legacy[code]
+    else:
+        assert re.fullmatch(r'F1[3-8]', code), f'Unsupported SYMBOL code {code}'
+        name, implicit = 'FK' + code[1:], ()
+    check(name, en, implicit, 0)
+    check(name, ru, implicit, 1)
+    check(name, ru.upper(), tuple(set(implicit) | {'Shift'}), 1)
+
 print(f'{checks} checks; {len(failures)} failures')
 print('\n'.join(failures))
 sys.exit(bool(failures))
