@@ -17,12 +17,13 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/rgb.h>
 
-#define LOWER  1
-#define RAISE  2
-#define CONFIG 3
-#define GAME   4
+#define GAME   1
+#define LOWER  2
+#define RAISE  3
+#define CONFIG 4
 
 / {
     chosen { zmk,physical-layout = &default_layout; };
@@ -30,6 +31,16 @@
 
 / {
     behaviors {
+        bt_clear_hold: bluetooth_clear_hold {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            // Other key presses must not turn an accidental tap into a clear.
+            flavor = "tap-preferred";
+            tapping-term-ms = <1000>;
+            bindings = <&bt>, <&none>;
+            display-name = "Hold to clear current Bluetooth profile";
+        };
+
         hml: home_row_mod_left {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -90,6 +101,18 @@
             >;
         };
 
+        // GAME is below the momentary layers so NUMBER/SYMBOL/CONFIG still win.
+        game_layer {
+            display-name = "GAME";
+            // Colemak-DH without home-row mods. Transparent except home row.
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &kp A   &kp R   &kp S   &kp T   &trans  &trans  &trans  &trans  &kp N   &kp E   &kp I   &kp O   &trans
+&trans  &trans  &trans  &trans  &trans  &trans                  &trans  &trans  &trans  &trans  &trans  &trans
+                        &trans  &trans  &trans                  &trans  &trans  &trans
+            >;
+        };
+
         lower_layer {
             display-name = "NUMBER";
 
@@ -134,22 +157,18 @@
         config_layer {
             display-name = "CONFIG";
 
+            // Hold LOWER + RAISE. Profile numbers follow NUMBER's left numpad.
+            // Q: hold 1s to clear only the selected profile; a tap does nothing.
+            // B: Studio unlock; G: GAME. Unused positions intentionally blocked.
+            // | --- | CLR | USB | BLE | --- | STUDIO | --- | --- | RGB | BRI- | BRI+ | --- | --- | --- |
+            // | --- | --- | BT4 | BT5 | --- | GAME   | --- | --- | EFF | HUE- | HUE+ | --- | --- | --- |
+            // | --- | --- | BT1 | BT2 | BT3 | ---    |           | --- | ---  | ---  | --- | --- | --- |
+            //                         | --- | LWR | --- |           | --- | RSE | --- |
             bindings = <
-&rgb_ug RGB_BRI  &rgb_ug RGB_HUD  &rgb_ug RGB_HUI  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 4
-&rgb_ug RGB_TOG  &trans  &trans  &trans  &trans  &tog GAME  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &bt BT_SEL 3
-&rgb_ug RGB_BRD  &trans  &trans  &kp CAPS  &trans  &trans                  &trans  &trans  &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2
-                             &trans  &trans  &trans                        &trans  &trans     &trans
-            >;
-        };
-
-        game_layer {
-            display-name = "GAME";
-            // Colemak-DH without home-row mods. Transparent except home row.
-            bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &kp A   &kp R   &kp S   &kp T   &trans  &trans  &trans  &trans  &kp N   &kp E   &kp I   &kp O   &trans
-&trans  &trans  &trans  &trans  &trans  &trans                  &trans  &trans  &trans  &trans  &trans  &trans
-                        &trans  &trans  &trans                  &trans  &trans  &trans
+&none  &bt_clear_hold BT_CLR 0  &out OUT_USB  &out OUT_BLE  &none         &studio_unlock  &none  &none  &rgb_ug RGB_TOG  &rgb_ug RGB_BRD  &rgb_ug RGB_BRI  &none  &none  &none
+&none  &none                   &bt BT_SEL 3  &bt BT_SEL 4  &none         &tog GAME       &none  &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUD  &rgb_ug RGB_HUI  &none  &none  &none
+&none  &none                   &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &none                         &none            &none            &none            &none  &none  &none
+                                                        &none  &trans  &none                         &none            &trans           &none
             >;
         };
     };

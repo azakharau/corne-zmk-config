@@ -35,6 +35,34 @@ workflow and west manifest pin the same ZMK revision for reproducibility.
 Use the settings-reset images only when intentionally clearing stored ZMK
 settings, then flash the normal images again.
 
+## CONFIG layer
+
+Hold both thumb layer keys (LOWER + RAISE). Positions below refer to the
+base Colemak-DH letters, independent of the host's English/Russian layout.
+
+| Base key | CONFIG action |
+| --- | --- |
+| X / C / D | Bluetooth profiles 1 / 2 / 3 (ZMK indices 0 / 1 / 2) |
+| R / S | Bluetooth profiles 4 / 5 (ZMK indices 3 / 4) |
+| Q, held for 1 second | Clear pairing for the currently selected profile only |
+| W / F | Prefer USB / Bluetooth output |
+| B | Unlock ZMK Studio (also retained on NUMBER + B) |
+| G | Toggle GAME |
+| J | Toggle RGB underglow |
+| L / U | Decrease / increase RGB brightness |
+| M | Next RGB effect |
+| N / E | Decrease / increase hue |
+
+The profile keys occupy the NUMBER layer's physical 1–5 positions. A short
+Q tap does nothing. Unassigned CONFIG keys are blocked, apart from the
+transparent layer thumbs. GAME remains below NUMBER, SYMBOL and CONFIG,
+so these controls (including CONFIG + G to leave GAME) remain accessible.
+
+Firmware layer order is CLMKDH, GAME, NUMBER, SYMBOL, CONFIG. If a saved
+ZMK Studio keymap overrides the firmware defaults, restore the stock keymap
+in Studio after flashing; do not use settings-reset images just to update
+the layout, since they also erase stored settings and pairings.
+
 ## Host layout
 
 The keymap is designed to work with a host-side Rulemak layout adapted for
