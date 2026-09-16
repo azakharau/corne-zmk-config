@@ -5,6 +5,7 @@ Run: python -m unittest discover -s tests -p test_config_layout.py -v
 """
 from pathlib import Path
 import re
+import subprocess
 import unittest
 
 SOURCE = (Path(__file__).resolve().parents[1] / "config/corne_choc_pro.keymap").read_text()
@@ -25,6 +26,17 @@ def route(position, *active):
 
 
 class ConfigLayout(unittest.TestCase):
+    def test_clear_binding_has_two_cells_after_zmk_macro_expansion(self):
+        # BT_CLR expands into command AND argument; passing it plus another
+        # cell to hold-tap produces an invalid devicetree binding.
+        source = re.sub(r"^#include.*$", "", SOURCE, flags=re.M)
+        header = Path(__file__).parent / "fixtures/zmk-bt.h"
+        expanded = subprocess.run(["cpp", "-P", "-x", "assembler-with-cpp", "-include", str(header), "-"],
+                                  input=source, text=True, capture_output=True, check=True).stdout
+        config = expanded.split("config_layer {", 1)[1].split("bindings = <", 1)[1].split(">;", 1)[0]
+        q = re.findall(r"&[^&]+", config)[1].split()
+        self.assertEqual(len(q) - 1, 2, f"hold-tap needs exactly two cells, got {q}")
+
     def test_matrix_and_named_layer_indices_match(self):
         for name, bindings in LAYERS:
             self.assertEqual(len(bindings), 46, name)
@@ -44,7 +56,7 @@ class ConfigLayout(unittest.TestCase):
                                      ("&bt", "BT_SEL", profile))
 
     def test_config_actions_and_inert_unused_keys(self):
-        wanted = {1: ("&bt_clear_hold", "BT_CLR", "0"), 2: ("&out", "OUT_USB"),
+        wanted = {1: ("&bt_clear_hold", "0", "0"), 2: ("&out", "OUT_USB"),
                   3: ("&out", "OUT_BLE"), 5: ("&studio_unlock",),
                   8: ("&rgb_ug", "RGB_TOG"), 9: ("&rgb_ug", "RGB_BRD"),
                   10: ("&rgb_ug", "RGB_BRI"), 16: ("&bt", "BT_SEL", "3"),

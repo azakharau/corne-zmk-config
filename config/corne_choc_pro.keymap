@@ -31,13 +31,22 @@
 
 / {
     behaviors {
+        bt_clear_current: bluetooth_clear_current {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&bt BT_CLR>;
+            display-name = "Clear current Bluetooth profile";
+        };
+
         bt_clear_hold: bluetooth_clear_hold {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             // Other key presses must not turn an accidental tap into a clear.
             flavor = "tap-preferred";
             tapping-term-ms = <1000>;
-            bindings = <&bt>, <&none>;
+            bindings = <&bt_clear_current>, <&none>;
             display-name = "Hold to clear current Bluetooth profile";
         };
 
@@ -165,7 +174,7 @@
             // | --- | --- | BT1 | BT2 | BT3 | ---    |           | --- | ---  | ---  | --- | --- | --- |
             //                         | --- | LWR | --- |           | --- | RSE | --- |
             bindings = <
-&none  &bt_clear_hold BT_CLR 0  &out OUT_USB  &out OUT_BLE  &none         &studio_unlock  &none  &none  &rgb_ug RGB_TOG  &rgb_ug RGB_BRD  &rgb_ug RGB_BRI  &none  &none  &none
+&none  &bt_clear_hold 0 0       &out OUT_USB  &out OUT_BLE  &none         &studio_unlock  &none  &none  &rgb_ug RGB_TOG  &rgb_ug RGB_BRD  &rgb_ug RGB_BRI  &none  &none  &none
 &none  &none                   &bt BT_SEL 3  &bt BT_SEL 4  &none         &tog GAME       &none  &none  &rgb_ug RGB_EFF  &rgb_ug RGB_HUD  &rgb_ug RGB_HUI  &none  &none  &none
 &none  &none                   &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &none                         &none            &none            &none            &none  &none  &none
                                                         &none  &trans  &none                         &none            &trans           &none
